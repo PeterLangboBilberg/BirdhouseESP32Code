@@ -877,7 +877,7 @@ void stream_sender(WebSocketsClient *webSocket) {
   enable_led(true);
 #endif
  //Serial.println("Streamsender Before while loop");
-  while (cameraOn) {
+  //while (cameraOn) {
   // Serial.println("Streamsender Starting while loop");
     fb = esp_camera_fb_get();
     if (!fb) {
@@ -935,7 +935,7 @@ void stream_sender(WebSocketsClient *webSocket) {
     }
     if (res != ESP_OK) {
        Serial.println("Streamsender send frame failed");
-      break;
+     // break;
     }
     int64_t fr_end = esp_timer_get_time();
 
@@ -951,7 +951,7 @@ void stream_sender(WebSocketsClient *webSocket) {
       1000.0 / avg_frame_time
     );
     
-  }
+  //}
 
 #if defined(LED_GPIO_NUM)
   isStreaming = false;

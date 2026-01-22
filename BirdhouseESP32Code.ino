@@ -228,20 +228,20 @@ if (millis() - lastSendTime > 10000) {
  }
  }
 
-// PID starting camera
- if(pirstat == HIGH){ 
- if(!streamStarted && connected){
-   Serial.println("Starting stream now");
-   streamStarted = true;
+ // PID starting camera
+ if(pirstat == HIGH && connected){ 
+ 
+   Serial.println("Sending image now");
+   //streamStarted = true;
    stream_sender(&webSocket);
-}
- }else{
-  // stop streaming
-    Serial.println("stopStreaming ");
-  stopStreaming(true);
-  streamStarted = false;
 
+ }else{
+  
+    //Serial.println("PID is low ");
+  
  }
+
+delay(50);
 }
 
 
