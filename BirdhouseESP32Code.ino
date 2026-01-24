@@ -18,6 +18,7 @@ uint8_t binaryPayload[] = {0x01, 0x02, 0x03, 0x04};
 size_t payloadLength = sizeof(binaryPayload) / sizeof(binaryPayload[0]);
 
 String espMacAddress = "unknown";
+String ipAddress = "unknown";
 
 WiFiMulti WiFiMulti;
 WebSocketsClient webSocket;
@@ -175,6 +176,10 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
 
+  // getting ip as string
+  // Convert IPAddress to String
+  IPAddress ip = WiFi.localIP();
+  ipAddress = String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
 // getting the mac address from the ESP32 -we need this to identify the ESP32 on the server
     WiFi.mode(WIFI_STA);   // ensures STA MAC is available
     espMacAddress = WiFi.macAddress();  // "AA:BB:CC:DD:EE:FF"
@@ -224,14 +229,14 @@ if (millis() - lastSendTime > 10000) {
   Serial.println("PIR is now HIGH ");
  }else{
   pirstat = LOW;
-  Serial.println("PIR is now LOW ");
+  //Serial.println("PIR is now LOW ");
  }
  }
 
  // PID starting camera
  if(pirstat == HIGH && connected){ 
  
-   Serial.println("Sending image now");
+  // Serial.println("Sending image now");
    //streamStarted = true;
    stream_sender(&webSocket);
 
@@ -241,7 +246,7 @@ if (millis() - lastSendTime > 10000) {
   
  }
 
-delay(50);
+delay(10);
 }
 
 
@@ -257,7 +262,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 			Serial.printf("[WSc] Connected to url: %s\n", payload);
 
 			// send message to server when Connected
-      String msg = "{\"status\":\"connected\",\"mac\":\"" + espMacAddress + "\"}";
+      String msg = "{\"status\":\"connected\",\"mac\":\"" + espMacAddress + ",\"ipAddress\":\"" + ipAddress + "\"}";  
 			webSocket.sendTXT(msg);
       connected = true;
 			break;
@@ -309,6 +314,7 @@ if (oneWire.reset()) {
 
 
     String payload = "{";
+     payload += "\"espMacAddress\":\"" + espMacAddress + "\",";
     payload += "\"dallasTemperaturesStatus\":\"" + status + "\",";
     payload += "\"dallasTemperaturesSensorNo\":" + String(deviceCount) + ",";
     payload += "\"dallasTemperaturesSensor1\":" + String(temp1, 2) + ",";
